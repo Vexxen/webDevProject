@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- <h1>Template Demo</h1> -->
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <h1>{{ hello }}</h1>
+        </div> 
+    </div>
+</div>
+{% if suggestion_list %}
+<ul>
+{% for s in suggestion_list %}
+<button type="button" class="btn btn-primary">{{ s.suggestion }}</button>
+{% endfor %}
+{% else %}
+<p>No list</p>
+{% endif %}
+</ul>
+<form action="/" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <!-- {{ form.suggestion.errors }} -->
+    <!-- {{ form.suggestion.label }} -->
+    <!-- {{ form.suggestion }} -->
+    <input type="submit" class="button" value="Add Suggestion" />
+</form>
+{% endblock %}
