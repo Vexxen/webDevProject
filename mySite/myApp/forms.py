@@ -14,7 +14,7 @@ class SuggestionForm(forms.Form):
     label='Suggestion', 
     required=False, 
     max_length=240,
-    validators=[must_be_lowercase,validate_slug]
+    #validators=[must_be_lowercase,validate_slug]
     )
 
     def save(self):

@@ -1,14 +1,32 @@
 {% extends "base.html" %}
 
 {% block content %}
-<!-- <h1>Template Demo</h1> -->
+
 <div class="container">
     <div class="row">
         <div class="col-lg-8 mx-auto">
             <h1>{{ hello }}</h1>
+            <h2>{{ explain }}</h2>
         </div> 
     </div>
 </div>
+
+<div id="app-4">
+    <span v-if="unseen">
+    <ul>
+      <li v-for="sugg in suggestions">
+        {% verbatim %}
+            {{ sugg.suggestion }}
+        {% endverbatim %}
+      </li>
+    </ul>
+    </span>
+    <span v-if="seen">
+        <p>Loading Suggestions...</p>
+    </span>
+</div>
+
+<!-- old suggestion list that I am holding onto for now
 {% if suggestion_list %}
 <ul>
 {% for s in suggestion_list %}
@@ -16,8 +34,9 @@
 {% endfor %}
 {% else %}
 <p>No list</p>
-{% endif %}
-</ul>
+{% endif %} 
+</ul> -->
+
 <form action="/" method="post">
     {% csrf_token %}
     {{ form }}

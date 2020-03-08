@@ -20,5 +20,6 @@ from . import views
 
 urlpatterns = [
     path('', views.index ),
-    path('<int:page>/', views.index),
+    # path('<int:page>/', views.index),
+    path('suggestions/', views.get_suggestions),
 ]
