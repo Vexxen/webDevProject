@@ -26,7 +26,7 @@ SECRET_KEY = '0j6f*9c#mi6p(@%07yhmo*5_0_b+x=xl0%lm=zg0vew_@johm)'
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+LOGIN_REDIRECT_URL="/"
 
 # Application definition
 
@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+#    'channels',
     'myApp',
 ]
 
