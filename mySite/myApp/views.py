@@ -59,3 +59,6 @@ def get_suggestions(request):
         # temp_sugg["comments"]=comment_objects
         suggestion_list["suggestions"]+=[temp_sugg]
     return JsonResponse(suggestion_list)
+
+def chat(request):
+    return render(request, 'chat/chat.html')

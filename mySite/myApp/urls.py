@@ -21,6 +21,7 @@ from . import views
 
 urlpatterns = [
     path('', views.index ),
+    path('chat/', views.chat),
     # path('<int:page>/', views.index),
     path('suggestions/', views.get_suggestions),
     path('login/', auth_views.LoginView.as_view()),
