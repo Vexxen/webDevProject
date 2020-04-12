@@ -10,15 +10,17 @@ services:
          - 8000
       links:
          - redis:redis
-      ports:
-         - 8000:8000
+      # ports:
+      #    - 8000:8000
       user: "1000:1000"
       command: python /code/mySite/manage.py runserver 0.0.0.0:8000
 
    redis:
       image: redis
-      expose:
-         - 6379
+      # expose:
+      #    - 6379
+      ports:
+         - "6379:6379"
 
 
    nginx:
