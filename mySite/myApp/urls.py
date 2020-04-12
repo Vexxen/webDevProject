@@ -20,8 +20,9 @@ from django.contrib.auth import views as auth_views
 from . import views
 
 urlpatterns = [
-    path('', views.index ),
+    path('', views.index, name='chat'),
     path('chat/', views.chat),
+    path('<str:room_name>/', views.room, name='room'),
     # path('<int:page>/', views.index),
     path('suggestions/', views.get_suggestions),
     path('login/', auth_views.LoginView.as_view()),

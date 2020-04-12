@@ -21,4 +21,5 @@ import myApp
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('myApp.urls')),
+    path('chat/', include('myApp.urls')),
 ]
