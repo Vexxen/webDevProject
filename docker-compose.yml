@@ -8,13 +8,11 @@ services:
          - .:/code
       expose:
          - 8000
-      ports:
-         - "8080:8080"
       links:
          - redis:redis
-      #  ports:
-      #     - 8000:8000
-      # user: "1000:1000"
+      ports:
+         - 8000:8000
+      user: "1000:1000"
       command: python /code/mySite/manage.py runserver 0.0.0.0:8000
 
    redis:
