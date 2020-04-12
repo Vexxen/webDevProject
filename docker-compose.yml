@@ -8,6 +8,8 @@ services:
          - .:/code
       expose:
          - 8000
+      ports:
+         -8080:8080
       links:
          - redis:redis
       #  ports:
