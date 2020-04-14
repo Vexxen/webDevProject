@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 class Suggestion_Model(models.Model):
@@ -10,7 +11,7 @@ class Suggestion_Model(models.Model):
 class Comment_Model(models.Model):
     comment = models.TextField()
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    suggestion = models.ForeignKey(SuggestionModel, on_delete=models.CASCADE)
+    suggestion = models.ForeignKey(Suggestion_Model, on_delete=models.CASCADE)
     published_on = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
