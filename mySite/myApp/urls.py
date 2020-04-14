@@ -20,10 +20,17 @@ from django.contrib.auth import views as auth_views
 from . import views
 
 urlpatterns = [
-    path('', views.index, name='chat'),
+    # path('', views.index, name='chat'),
+    path('', views.index),
+    path('page/', views.page),
     path('chat/', views.chat),
     path('<str:room_name>/', views.room, name='room'),
     # path('<int:page>/', views.index),
     path('suggestions/', views.get_suggestions),
     path('login/', auth_views.LoginView.as_view()),
+    path('register/', views.register),
+    path('logout/', views.logout_view),
+    path('suggestions/', views.get_suggestions),
+    path('suggestion/', views.make_suggestion),
+    path('comment/<int:sugg_id>/', views.comment),
 ]
