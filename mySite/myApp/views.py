@@ -33,6 +33,7 @@ def comment(request, sugg_id):
     }
     return render(request, "comment.html", context=context)
 
+
 def make_suggestion(request):
     if request.method == "POST":
         if request.user.is_authenticated:
@@ -50,56 +51,87 @@ def make_suggestion(request):
     }
     return render(request, "suggestion.html", context=context)
 
+def make_subreddit(request):
+    if request.method == "POST":
+        if request.user.is_authenticated:
+            form = forms.SubredditForm(request.POST)
+            if form.is_valid():
+                form.save(request)
+                return redirect("/") #return to home for now, change to the sub just created later
+        else:
+            form = forms.SubredditForm()
+    else:
+        form = forms.SubredditForm()
+    context = {
+        "title":"Create New Sub",
+        "form":form
+    }
+    return render(request, "newSub.html", context=context)
+
+def get_subreddits(request):
+    subreddit_objects = models.Subreddit.objects.all().order_by(
+        '-published_on'
+    )
+    subreddit_list = {}
+    subreddit_list["subreddits"] = []
+    #fetch all subs
+    for sub in subreddit_objects:
+        temp_sub = {}
+        temp_sub["title"] = sub.title
+        temp_sub["description"] = sub.description
+        temp_sub["id"] = sub.id
+        temp_sub["creator"] = sub.creator.username
+        subreddit_list["subreddits"] += [temp_sub]
+    return JsonResponse(subreddit_list)
 
 # Create your views here.
-def index(request, page=0):
-    if request.method == "POST":
-        form = forms.SuggestionForm(request.POST)
-        if form.is_valid():
-            form.save()
-            form = forms.SuggestionForm()
-    else:
-        form = forms.SuggestionForm()
-    # suggestion_list = models.Suggestion_Model.objects.all()
+def index(request):
     suggestion_objects = models.Suggestion_Model.objects.all()
     suggestion_list = []
     for sugg in suggestion_objects:
-        # not using comments in this assignment right now
-        # comment_objects = models.CommentModel.objects.filter(suggestion=sugg)
+        comment_objects = models.Comment_Model.objects.filter(suggestion=sugg)
         temp_sugg = {}
         temp_sugg["suggestion"] = sugg.suggestion
-        # temp_sugg["author"] = sugg.author.username
-        # temp_sugg["comments"] = comment_objects
+        temp_sugg["author"] = sugg.author.username
+        temp_sugg["comments"] = comment_objects
         suggestion_list += [temp_sugg]
-    
-    my_list=[]
-    for i in range(20):
-            i+=(page*10+1)
-            my_list+=[{
-                "first_name": "Name"+str(i),
-                "last_name": "Surname"+str(i),
-            }
-        ]
 
     context = {
-        #variable definitions go in here
-        "title":"Template Demo",
-        "body":"Hello Template",
+        "title":"Tempate Demo",
+        "body":"<p> Hello Body</p>",
         "suggestion_list":suggestion_list,
-        "hello":"CINS465 Hello World",
-        "form":form,
-        "explain":"This JS simply refreshes the client side page with info from other client's suggestions in another browser window"
     }
     return render(request, "index.html", context=context)
 
+def list_subreddits(request):
+    subreddit_objects = models.Subreddit.objects.all().order_by(
+        '-published_on'
+    )
+    subreddit_list = {}
+    subreddit_list["subreddits"] = []
+    #fetch all subs
+    for sub in subreddit_objects:
+        temp_sub = {}
+        temp_sub["title"] = sub.title
+        temp_sub["description"] = sub.description
+        temp_sub["id"] = sub.id
+        temp_sub["creator"] = sub.creator.username
+        subreddit_list["subreddits"] += [temp_sub]
+    context = {
+        "title":"Subreddit List",
+        "welcome":"All Subreddits",
+        "subreddits":subreddit_list,
+    }
+    return render(request, "subreddits/subredditList.html", context=context)
+
 def get_suggestions(request):
-    suggestion_objects = models.SuggestionModel.objects.all().order_by(
+    suggestion_objects = models.Suggestion_Model.objects.all().order_by(
         '-published_on'
     )
     suggestion_list = {}
     suggestion_list["suggestions"] = []
     for sugg in suggestion_objects:
-        comment_objects = models.CommentModel.objects.filter(
+        comment_objects = models.Comment_Model.objects.filter(
             suggestion=sugg
         ).order_by(
             '-published_on'
@@ -144,10 +176,10 @@ def page(request):
             form = forms.SuggestionForm()
     else:
         form = forms.SuggestionForm()
-    suggestion_objects = models.SuggestionModel.objects.all()
+    suggestion_objects = models.Suggestion_Model.objects.all()
     suggestion_list = []
     for sugg in suggestion_objects:
-        comment_objects = models.CommentModel.objects.filter(suggestion=sugg)
+        comment_objects = models.Comment_Model.objects.filter(suggestion=sugg)
         temp_sugg = {}
         temp_sugg["suggestion"] = sugg.suggestion
         temp_sugg["author"] = sugg.author.username
@@ -183,3 +215,24 @@ def room(request, room_name):
     return render(request, 'chat/room.html', {
         'room_name': room_name
     })
+
+# @login_required
+# @transaction.atomic
+# def update_profile(request):
+#     if request.method == 'POST':
+#         user_form = UserForm(request.POST, instance=request.user)
+#         profile_form = ProfileForm(request.POST, instance=request.user.profile)
+#         if user_form.is_valid() and profile_form.is_valid():
+#             user_form.save()
+#             profile_form.save()
+#             messages.success(request, _('Your profile was successfully updated!'))
+#             return redirect('settings:profile')
+#         else:
+#             messages.error(request, _('Please correct the error below.'))
+#     else:
+#         user_form = UserForm(instance=request.user)
+#         profile_form = ProfileForm(instance=request.user.profile)
+#     return render(request, 'profiles/profile.html', {
+#         'user_form': user_form,
+#         'profile_form': profile_form
+#     })

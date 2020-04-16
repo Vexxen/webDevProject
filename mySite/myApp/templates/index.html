@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}{{ title }}{% endblock %}
 {% block content %}
 
@@ -16,7 +17,21 @@
     <ul>
       <li v-for="sugg in suggestions">
         {% verbatim %}
-            {{ sugg.suggestion }}
+        <img :src="sugg.image" :alt="sugg.image_desc"/>
+        <h3 class="lead">{{ sugg.suggestion }}</h3>
+        authored by {{ sugg.author}}
+        published on {{ sugg.date }}
+        <div class="grid-x">
+            <div class="large-11 medium-11 small-12 large-offset-1 medium-offset-1 cell">
+            
+                <div class="card-info primary" v-for="comm in sugg.comments">
+                    <div class="card-info-content">
+                        {{ comm.comment }} - {{ comm.author }} - {{ comm.date }}
+                        </div>
+                </div>
+            </div>
+        </div>
+        <a :href="'/comment/'+sugg.id+'/'" class="button">comment</a>
         {% endverbatim %}
       </li>
     </ul>
@@ -37,12 +52,8 @@
 {% endif %} 
 </ul> -->
 
-<form action="/" method="post">
-    {% csrf_token %}
-    {{ form }}
-    <!-- {{ form.suggestion.errors }} -->
-    <!-- {{ form.suggestion.label }} -->
-    <!-- {{ form.suggestion }} -->
-    <input type="submit" class="button" value="Add Suggestion" />
-</form>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static "js/app.js" %}"></script>
 {% endblock %}

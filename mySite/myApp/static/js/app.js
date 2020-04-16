@@ -1,6 +1,3 @@
-
-
-
 var app4 = new Vue({
     el: '#app-4',
     data: {
@@ -27,6 +24,7 @@ var app4 = new Vue({
     },
     beforeDestroy() {
         this.cancelAutoUpdate();
-        clearInterval(this.timer)
+        //clearInterval(this.timer)
     }
   })
+
