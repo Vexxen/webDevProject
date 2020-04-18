@@ -86,20 +86,20 @@ def get_subreddits(request):
 
 # Create your views here.
 def index(request):
-    suggestion_objects = models.Suggestion_Model.objects.all()
-    suggestion_list = []
-    for sugg in suggestion_objects:
-        comment_objects = models.Comment_Model.objects.filter(suggestion=sugg)
-        temp_sugg = {}
-        temp_sugg["suggestion"] = sugg.suggestion
-        temp_sugg["author"] = sugg.author.username
-        temp_sugg["comments"] = comment_objects
-        suggestion_list += [temp_sugg]
+    # suggestion_objects = models.Suggestion_Model.objects.all()
+    # suggestion_list = []
+    # for sugg in suggestion_objects:
+    #     comment_objects = models.Comment_Model.objects.filter(suggestion=sugg)
+    #     temp_sugg = {}
+    #     temp_sugg["suggestion"] = sugg.suggestion
+    #     temp_sugg["author"] = sugg.author.username
+    #     temp_sugg["comments"] = comment_objects
+    #     suggestion_list += [temp_sugg]
 
     context = {
         "title":"Tempate Demo",
         "body":"<p> Hello Body</p>",
-        "suggestion_list":suggestion_list,
+        # "suggestion_list":suggestion_list,
     }
     return render(request, "index.html", context=context)
 

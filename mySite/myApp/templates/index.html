@@ -12,48 +12,9 @@
     </div>
 </div>
 
-<!-- <div id="app-4">
-    <span v-if="unseen">
-    <ul>
-      <li v-for="sugg in suggestions">
-        {% verbatim %}
-        <img :src="sugg.image" :alt="sugg.image_desc"/>
-        <h3 class="lead">{{ sugg.suggestion }}</h3>
-        authored by {{ sugg.author}}
-        published on {{ sugg.date }}
-        <div class="grid-x">
-            <div class="large-11 medium-11 small-12 large-offset-1 medium-offset-1 cell">
-            
-                <div class="card-info primary" v-for="comm in sugg.comments">
-                    <div class="card-info-content">
-                        {{ comm.comment }} - {{ comm.author }} - {{ comm.date }}
-                        </div>
-                </div>
-            </div>
-        </div>
-        <a :href="'/comment/'+sugg.id+'/'" class="button">comment</a>
-        {% endverbatim %}
-      </li>
-    </ul>
-    </span>
-    <span v-if="seen">
-        <p>Loading Suggestions...</p>
-    </span>
-</div> -->
-
-<!-- old suggestion list that I am holding onto for now
-{% if suggestion_list %}
-<ul>
-{% for s in suggestion_list %}
-<button type="button" class="btn btn-primary">{{ s.suggestion }}</button>
-{% endfor %}
-{% else %}
-<p>No list</p>
-{% endif %} 
-</ul> -->
 
 {% endblock %}
 
 {% block scripts %}
-<!-- <script src="{% static "js/app.js" %}"></script> -->
+
 {% endblock %}
