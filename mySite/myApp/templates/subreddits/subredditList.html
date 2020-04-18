@@ -3,26 +3,29 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-<h1><a href="/">Subreddits List</a></h1>
+<h1><a href="/list/">Subreddits List</a></h1>
+<div><a href="/newSub/">Create New Subreddit</a></div>
 <div id="subFetch">
     <ul>
       <li v-for="sub in subreddits">
         {% verbatim %}
-        <h3><a href=''>{{ sub.title }}</a></h3>
+        <!-- <h3><a href="/list/{{ sub.title }}/">{{ sub.title }}</a></h3> -->
+        <!-- <h3><a v-bind:href="{% url 'subreddit' selectedTitle = sub.title %}">{{ sub.title }}</a></h3> -->
+        <h3><a v-bind:href="sub.title">{{ sub.title }}</a></h3>
         {{ sub.description }}
-        Created by {{ sub.creator}}
+        Created by {{ sub.creator }}
 
         <!-- <a :href="'/comment/'+sugg.id+'/'" class="button">comment</a> -->
         {% endverbatim %}
       </li>
     </ul>
-    
-    <!-- <span v-if="seen">
-        <p>Loading Suggestions...</p>
-    </span> -->
 </div>
 {% endblock %}
 
 {% block scripts %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script src="{% static "js/subreddits.js" %}"></script>
 {% endblock %}

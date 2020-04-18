@@ -66,75 +66,57 @@ class Subreddit(models.Model):
         except ObjectDoesNotExist:
             return Subreddit.objects.get(title=title.replace('_',' '))
 
-class Thread(NamedModel):
-    title = models.CharField(max_length=80, blank=False)
-    slug = models.SlugField(unique=False, null=True)
-    url = models.URLField(max_length=120, blank=True, default='')
-    views = models.IntegerField(blank=True, default=0)
+class Post(MPTTModel):
+    title = models.CharField(max_length=50, unique=False, blank=True)
+    body = models.TextField()
+    published_on = models.DateTimeField(auto_now_add=True, auto_now=False)
+    last_modified = models.DateTimeField(auto_now_add=False, auto_now=True)
+    parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children')
     subreddit = models.ForeignKey(Subreddit, on_delete=models.CASCADE)
-    op = models.ForeignKey('Post', related_name='+', on_delete=models.CASCADE)
-    
+    # uid = models.UUIDField(max_length=8, primary_key=True, default=uuid.uuid4, editable=False, unique=True)
     def __str__(self):
         return self.title
 
-    def save(self, *args, **kwargs):
-        self.slug = self._genSlug()
-        super(Thread, self).save(*args, **kwargs)
+    class MPTTMeta:
+        order_insertion_by = ['id']
 
-    def delete(self, *args, **kwargs):
-        try:
-            self.op.delete()
-        except Post.DoesNotExist:
-            pass
-        super(Thread, self).delete(*args, **kwargs)
+# class Post(models.Model):
+# class Post(MPTTModel, NamedModel):
+#     uid = models.UUIDField(max_length=8, primary_key=True, default=uuid.uuid4, editable=False)
+#     content = models.TextField(blank=True, default='')
+#     author = models.ForeignKey(User, on_delete=models.CASCADE)
+#     published_on = models.DateTimeField(auto_now_add=True, auto_now=False)
+#     last_modified = models.DateTimeField(auto_now_add=False, auto_now=True)
+#     parent = TreeForeignKey('self', null=True, blank=True, related_name='children', db_index=True, on_delete=models.CASCADE)
+#     #ip_addr = models.GenericIPAddressField(blank=True, null=True)
+#     #insert voting
 
-    def _genSlug(self):
-        slug = slugify(self.title, to_lower=True, max_length=80)
-        return slug
+#     def __init__(self, *args, **kwargs):
+#         super(Post, self).__init__(*args, **kwargs)
+#         #insert voting
     
-    @property
-    def relativeUrl(self):
-        return reverse('threadPage', args=[self.subreddit.urlTitle, self.id, self.slug])
+#     class MPTTMetta:
+#         order_insertion_by = ['created_on']
 
-    def get_absolute_url(self):
-            return self.relativeUrl
+#     def __str_(self):
+#         return self.content[:80]
 
-class Post(MPTTModel, NamedModel):
-    uid = models.UUIDField(max_length=8, primary_key=True, default=uuid.uuid4, editable=False)
-    content = models.TextField(blank=True, default='')
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
-    published_on = models.DateTimeField(auto_now_add=True, auto_now=False)
-    last_modified = models.DateTimeField(auto_now_add=False, auto_now=True)
-    parent = TreeForeignKey('self', null=True, blank=True, related_name='children', db_index=True, on_delete=models.CASCADE)
-    #ip_addr = models.GenericIPAddressField(blank=True, null=True)
-    #insert voting
+#     @property
+#     def thread(self):
+#         post = self
+#         while post.parent:
+#             post = post.parent
+#         return Thread.objects.get(op=post)
 
-    def __init__(self, *args, **kwargs):
-        super(Post, self).__init__(*args, **kwargs)
-        #insert voting
-    
-    class MPTTMetta:
-        order_insertion_by = ['created_on']
+#     # @property
+#     # def score(self):
+#     #         return self.upvotes - self.downvotes
 
-    def __str_(self):
-        return self.content[:80]
-
-    @property
-    def thread(self):
-        post = self
-        while post.parent:
-            post = post.parent
-        return Thread.objects.get(op=post)
-
-    # @property
-    # def score(self):
-    #         return self.upvotes - self.downvotes
-
-    def getReplies(self, excluded=()):
-        replies = Post.objects.filter(parent=self.uid).exclude(excluded_uid=excluded)
-        for reply in replies:
-            replies |= reply.getReplies(excluded=excluded)
-        return replies
+#     def getReplies(self, excluded=()):
+#         replies = Post.objects.filter(parent=self.uid).exclude(excluded_uid=excluded)
+#         for reply in replies:
+#             replies |= reply.getReplies(excluded=excluded)
+#         return replies
 
 # class Profile(models.Model):
 #     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -150,3 +132,37 @@ class Post(MPTTModel, NamedModel):
 # @receiver(post_save, sender=User)
 # def save_user_profile(sender, instance, **kwargs):
 #     instance.profile.save()
+
+# class Thread(models.Model):
+#     title = models.CharField(max_length=80, blank=False)
+#     # slug = models.SlugField(unique=False, null=True)
+#     body = models.TextField()
+#     url = models.URLField(max_length=120, blank=True, default='')
+#     # views = models.IntegerField(blank=True, default=0)
+#     subreddit = models.ForeignKey(Subreddit, on_delete=models.CASCADE)
+#     # op = models.ForeignKey('Post', related_name='+', on_delete=models.CASCADE)
+    
+#     def __str__(self):
+#         return self.title
+
+#     def save(self, *args, **kwargs):
+#         self.slug = self._genSlug()
+#         super(Thread, self).save(*args, **kwargs)
+
+#     def delete(self, *args, **kwargs):
+#         try:
+#             self.op.delete()
+#         except Post.DoesNotExist:
+#             pass
+#         super(Thread, self).delete(*args, **kwargs)
+
+#     def _genSlug(self):
+#         slug = slugify(self.title, to_lower=True, max_length=80)
+#         return slug
+    
+#     @property
+#     def relativeUrl(self):
+#         return reverse('threadPage', args=[self.subreddit.urlTitle, self.id, self.slug])
+
+#     def get_absolute_url(self):
+#             return self.relativeUrl

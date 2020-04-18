@@ -1,10 +1,13 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from django.core.validators import validate_slug
+from django.core.validators import validate_slug, 
 from django.contrib.auth.models import User
 
 
 from . import models
+
+def must_be_alphanumeric(value):
+
 
 def must_be_unique(value):
     user = User.objects.filter(email=value)
@@ -47,21 +50,59 @@ class SuggestionForm(forms.Form):
         suggestion_instance.save()
         return suggestion_instance
 
-class CommentForm(forms.Form):
-    comment = forms.CharField(
+class PostForm(forms.Form):
+    title = forms.CharField(
+        label='title',
+        required=True,
+        max_length=50
+    )
+    body = forms.CharField(
         widget=forms.Textarea,
-        label='Comment',
-        required=True
+        label='body',
+        required=False
     )
 
-    def save(self, request, sugg_id):
-        suggestion_instance = models.Suggestion_Model.objects.filter(id=sugg_id).get()
-        comment_instance = models.Comment_Model()
-        comment_instance.suggestion = suggestion_instance
-        comment_instance.comment = self.cleaned_data["comment"]
-        comment_instance.author = request.user
-        comment_instance.save()
-        return comment_instance
+    def save(self, sub):
+        subreddit_instance = models.Subreddit.objects.filter(title=sub).get()
+        post_instance = models.Post()
+        post_instance.title = self.cleaned_data["title"]
+        post_instance.body = self.cleaned_data["body"]
+        post_instance.subreddit = subreddit_instance
+        post_instance.save()
+        return post_instance
+
+class ReplyForm(forms.Form):
+    body = forms.CharField(
+        widget=forms.Textarea,
+        label='body',
+        required=False
+    )
+
+    def save(self, sub, post_id):
+        post_instance = models.Post.objects.filter(id=post_id).get()
+        subreddit_instance = models.Subreddit.objects.filter(title=sub).get()
+        reply_instance = models.Post()
+        reply_instance.parent = post_instance
+        reply_instance.body = self.cleaned_data["body"]
+        reply_instance.subreddit = subreddit_instance
+        reply_instance.save()
+        return reply_instance
+
+# class CommentForm(forms.Form):
+#     comment = forms.CharField(
+#         widget=forms.Textarea,
+#         label='Comment',
+#         required=True
+#     )
+
+#     def save(self, request, sugg_id):
+#         suggestion_instance = models.Suggestion_Model.objects.filter(id=sugg_id).get()
+#         comment_instance = models.Comment_Model()
+#         comment_instance.suggestion = suggestion_instance
+#         comment_instance.comment = self.cleaned_data["comment"]
+#         comment_instance.author = request.user
+#         comment_instance.save()
+#         return comment_instance
 
 class RegistrationForm(UserCreationForm):
     email = forms.EmailField(
@@ -83,6 +124,7 @@ class RegistrationForm(UserCreationForm):
         return user
 
 
+
 class SubredditForm(forms.Form):
     # class Meta:
     #     model = Subreddit
@@ -92,7 +134,8 @@ class SubredditForm(forms.Form):
     title = forms.CharField(
         label='title',
         max_length=30,
-        required=True
+        required=True,
+        validators=[validate_slug]
     )
     description = forms.CharField(
         widget=forms.Textarea,
@@ -112,9 +155,7 @@ class SubredditForm(forms.Form):
     #     self.helper = FormHelper(self)
     #     self.helper.layout.append(Submit('submit', 'Submit', css_class='btn btn-primary'))
 
-# class ThreadForm(forms.ModelForm):
 
-# class PostForm(forms.ModelForm):
 
 # class UserForm(forms.Form):
 #     class Meta:

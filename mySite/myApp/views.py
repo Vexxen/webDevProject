@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from django.shortcuts import render, HttpResponse, redirect
+from django.shortcuts import render, HttpResponse, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.http import JsonResponse
@@ -33,7 +33,6 @@ def comment(request, sugg_id):
     }
     return render(request, "comment.html", context=context)
 
-
 def make_suggestion(request):
     if request.method == "POST":
         if request.user.is_authenticated:
@@ -57,7 +56,8 @@ def make_subreddit(request):
             form = forms.SubredditForm(request.POST)
             if form.is_valid():
                 form.save(request)
-                return redirect("/") #return to home for now, change to the sub just created later
+                
+                return redirect("/list/") #return to home for now, change to the sub just created later
         else:
             form = forms.SubredditForm()
     else:
@@ -123,6 +123,31 @@ def list_subreddits(request):
         "subreddits":subreddit_list,
     }
     return render(request, "subreddits/subredditList.html", context=context)
+
+def get_threads(request):
+    thread_objects = models.Thread.objects.all().order_by(
+        '-pulished_on'
+    )
+    thread_list = {}
+    thread_list["threads"] = []
+    #fetch all threads
+
+def make_thread(request):
+    if request.method == "POST":
+        if request.user.is_authenticated:
+            form = forms.SubredditForm(request.POST)
+            if form.is_valid():
+                form.save(request)
+                return redirect("/") #return to home for now, change to the sub just created later
+        else:
+            form = forms.SubredditForm()
+    else:
+        form = forms.SubredditForm()
+    context = {
+        "title":"Create New Thread",
+        "form":form
+    }
+    return render(request, "newThread.html", context=context)
 
 def get_suggestions(request):
     suggestion_objects = models.Suggestion_Model.objects.all().order_by(
@@ -215,6 +240,69 @@ def room(request, room_name):
     return render(request, 'chat/room.html', {
         'room_name': room_name
     })
+
+def subreddit_main_page(request, sub):
+    subreddit = models.Subreddit.objects.get(title=sub)
+    context={
+        'subreddit':subreddit,
+        'posts': models.Post.objects.filter(subreddit=subreddit)
+        # 'title':subreddit.title,
+    }
+    return render(request, 'subreddits/topic.html', context=context)
+
+def show_posts(request, sub, post_id):
+    subreddit_instance = models.Subreddit.objects.get(title=sub)
+    root_post = models.Post.objects.get(id=post_id, subreddit=subreddit_instance)
+    posts = root_post.get_descendants(include_self=True)
+    
+    context = {
+        'posts':posts,
+        'subreddit':subreddit_instance
+    }
+    return render(request, 'subreddits/posts.html', context=context)
+
+def create_post(request, sub):
+    if not request.user.is_authenticated:
+        return redirect("/")
+    if request.method == "POST":
+        if request.user.is_authenticated:
+            form = forms.PostForm(request.POST)
+            if form.is_valid():
+                form.save(sub)
+                return redirect("/list/" + sub + "/")
+        else:
+            form = forms.PostForm()
+    else:
+        form = forms.PostForm()
+    context = {
+        "title":"New Post",
+        "form":form,
+        "sub":sub
+    }
+    return render(request, "subreddits/newPost.html", context=context)
+
+#pass root node ID to see your response?
+def create_reply(request, sub, post_id):
+    if not request.user.is_authenticated:
+        return redirect("/")
+    if request.method == "POST":
+        if request.user.is_authenticated:
+            form = forms.ReplyForm(request.POST)
+            if form.is_valid():
+                form.save(sub, post_id)
+                return redirect("/list/" + sub + "/posts/" + str(post_id) +"/")
+        else:
+            form = forms.ReplyForm()
+    else:
+        form = forms.ReplyForm()
+    context = {
+        "title":"New Reply",
+        "form":form,
+        "sub":sub,
+        "post_id":post_id
+    }
+    return render(request, "subreddits/reply.html", context=context)
+
 
 # @login_required
 # @transaction.atomic

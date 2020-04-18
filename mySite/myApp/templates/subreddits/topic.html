@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load mptt_tags %}
+<!-- {% block title %}{{ title }}{% endblock %}
+{{ title }} -->
+{% block content %}
+
+<h1>{{ subreddit.title }}</h1>
+<br/>{{ subreddit.description }}<br/>
+<div><a href="{% url 'create_post' subreddit.title %}" >Create New Post</a></div>
+<ul>
+    {% if posts %}
+        {% recursetree posts %}
+            <li>
+                {% if node.title %}
+                <a href="{% url 'root_post' subreddit.title node.id %}">{{node.title}}</a>
+                {% endif %}
+            </li>
+        {% endrecursetree %}
+    {% else %}
+        There's nothing here....  
+    {% endif %}
+</ul>
+
+{% endblock %}
+
+{% block scripts %}
+<!-- <script src="{% static "js/topic.js" %}"></script> -->
+{% endblock %}

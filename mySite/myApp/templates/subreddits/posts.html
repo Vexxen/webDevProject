@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load mptt_tags %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+{% block content %}
+{{subreddit.title}}
+
+<ul>
+    {% recursetree posts %}
+        <li>
+            {{ node.title }} : {{ node.body }} : {{node.id}}
+            {% if node.id %}
+            <div><a href="{% url 'create_reply' subreddit.title node.id %}" >reply</a></div>
+            {% endif %}
+            {% if not node.is_leaf_node %}
+                <ul class="children">
+                    {{ children }}
+                </ul>
+            {% endif %}
+        </li>
+    {% endrecursetree %}
+</ul>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+{% endblock %}
