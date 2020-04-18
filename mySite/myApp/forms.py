@@ -6,8 +6,6 @@ from django.contrib.auth.models import User
 
 from . import models
 
-def must_be_alphanumeric(value):
-
 
 def must_be_unique(value):
     user = User.objects.filter(email=value)
