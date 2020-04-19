@@ -1,6 +1,11 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
 <h2>{{ user.get_full_name }}</h2>
 <ul>
   <li>Username: {{ user.username }}</li>
-  <li>Location: {{ user.profile.location }}</li>
-  <li>Birth Date: {{ user.profile.birth_date }}</li>
+  <li>Date Joined: {{ user.date_joined }}</li>
+  <li>Last Login: {{ user.last_login }}</li>
 </ul>
+{% endblock %}

@@ -97,12 +97,15 @@ def index(request):
     #     suggestion_list += [temp_sugg]
 
     context = {
-        "title":"Tempate Demo",
+        "title":"Template Demo",
         "body":"<p> Hello Body</p>",
         # "suggestion_list":suggestion_list,
     }
     return render(request, "index.html", context=context)
 
+@login_required
+def get_profile(request):
+    return render(request, "profile.html")
 def list_subreddits(request):
     subreddit_objects = models.Subreddit.objects.all().order_by(
         '-published_on'
@@ -260,6 +263,38 @@ def show_posts(request, sub, post_id):
         'subreddit':subreddit_instance
     }
     return render(request, 'subreddits/posts.html', context=context)
+
+@login_required
+def upvote_post_view(request, post_id):
+    if request.is_ajax() and request.method =='POST':
+        post = models.Post.objects.get(id=post_id)
+        post.upvotes += 1
+        post.save()
+        response = {
+            'id': post.id,
+            'score': post.score
+        }
+        return JsonResponse(response)
+    else:
+        return redirect('/')
+
+@login_required
+def downvote_post_view(request, post_id):
+    if request.is_ajax() and request.method =='POST':
+        post = models.Post.objects.get(id=post_id)
+        post.downvotes += 1
+        post.save()
+        response = {
+            'id': post.id,
+            'score': post.score
+        }
+        return JsonResponse(response)
+    else:
+        return redirect('/')
+
+def get_score(request, post_id):
+    post = models.Post.objects.get(id=post_id)
+    return JsonResponse(post.score)
 
 @login_required 
 def create_post(request, sub):

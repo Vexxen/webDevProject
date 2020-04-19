@@ -15,7 +15,17 @@
             <li>
                 {% if node.title %}
                 <a href="{% url 'root_post' subreddit.title node.id %}">{{node.title}}</a>
-                    posted by: {{ node.author }}
+                <div class="upvote" id="button-{{ node.id }}" data-href="{% url 'upvote' node.id %}">
+                    {% csrf_token %}
+                    <button class="btn btn-primary">upvote</button>
+                </div>
+                <div><p id="score" name="scoreText-{{ node.id }}">{{ node.score }}</p></div>
+                <div class="downvote" id="button-{{ node.id }}" data-href="{% url 'downvote' node.id %}">
+                    {% csrf_token %}
+                    <button class="btn btn-primary">downvote</button>
+                </div>
+                <div>posted by: {{ node.author }}</div>
+            </br>
                 {% endif %}
             </li>
         {% endrecursetree %}
@@ -27,5 +37,9 @@
 {% endblock %}
 
 {% block scripts %}
-<!-- <script src="{% static "js/topic.js" %}"></script> -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="{% static "js/score.js" %}"></script>
 {% endblock %}

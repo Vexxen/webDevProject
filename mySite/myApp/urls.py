@@ -29,6 +29,7 @@ urlpatterns = [
     # path('<int:page>/', views.index),
     path('suggestions/', views.get_suggestions),
     path('login/', auth_views.LoginView.as_view(), name="login"),
+    path('profile/', views.get_profile, name='profile'),
     path('register/', views.register, name="register"),
     path('logout/', views.logout_view, name="logout"),
     path('suggestions/', views.get_suggestions),
@@ -43,6 +44,9 @@ urlpatterns = [
     path('list/<str:sub>/posts/<int:post_id>/', views.show_posts, name='root_post'),
     path('list/<str:sub>/newPost/', views.create_post, name='create_post'),
     path('list/<str:sub>/<int:post_id>/reply/', views.create_reply, name='create_reply'),
+    path('upvote/<int:post_id>', views.upvote_post_view, name='upvote'),
+    path('downvote/<int:post_id>', views.downvote_post_view, name='downvote'),
+    path('score/<int:post_id>', views.get_score, name='score'),
 ]
 # <int:sub_id>
 # <int:post_id>

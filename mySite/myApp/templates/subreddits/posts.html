@@ -8,7 +8,15 @@
 <ul>
     {% recursetree posts %}
         <li>
-            {{ node.title }} : {{ node.body }} <div>Posted by: {{node.author}}</div>
+            <div class="upvote" id="button-{{ node.id }}" data-href="{% url 'upvote' node.id %}">
+                {% csrf_token %}
+                <button class="btn btn-primary">upvote</button>
+            </div>
+            <div><p id="score-{{ node.id }}" name="scoreText-{{ node.id }}">{{ node.score }}</p></div> ---- {{ node.title }} : {{ node.body }} <div>Posted by: {{node.author}}</div>
+            <div class="downvote" id="button-{{ node.id }}" data-href="{% url 'downvote' node.id %}">
+                {% csrf_token %}
+                <button class="btn btn-primary">downvote</button>
+            </div>
             {% if node.id %}
             <div><a href="{% url 'create_reply' subreddit.title node.id %}" >reply</a></div>
             {% endif %}
@@ -27,4 +35,5 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="{% static "js/score.js" %}"></script>"
 {% endblock %}
