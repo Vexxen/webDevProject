@@ -8,7 +8,7 @@
 <ul>
     {% recursetree posts %}
         <li>
-            {{ node.title }} : {{ node.body }} : {{node.id}}
+            {{ node.title }} : {{ node.body }} <div>Posted by: {{node.author}}</div>
             {% if node.id %}
             <div><a href="{% url 'create_reply' subreddit.title node.id %}" >reply</a></div>
             {% endif %}

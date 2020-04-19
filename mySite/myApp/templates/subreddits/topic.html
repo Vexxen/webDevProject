@@ -14,6 +14,7 @@
             <li>
                 {% if node.title %}
                 <a href="{% url 'root_post' subreddit.title node.id %}">{{node.title}}</a>
+                    posted by: {{ node.author }}
                 {% endif %}
             </li>
         {% endrecursetree %}

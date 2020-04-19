@@ -60,11 +60,12 @@ class PostForm(forms.Form):
         required=False
     )
 
-    def save(self, sub):
+    def save(self, request, sub):
         subreddit_instance = models.Subreddit.objects.filter(title=sub).get()
         post_instance = models.Post()
         post_instance.title = self.cleaned_data["title"]
         post_instance.body = self.cleaned_data["body"]
+        post_instance.author = request.user
         post_instance.subreddit = subreddit_instance
         post_instance.save()
         return post_instance
@@ -76,10 +77,11 @@ class ReplyForm(forms.Form):
         required=False
     )
 
-    def save(self, sub, post_id):
+    def save(self, request, sub, post_id):
         post_instance = models.Post.objects.filter(id=post_id).get()
         subreddit_instance = models.Subreddit.objects.filter(title=sub).get()
         reply_instance = models.Post()
+        reply_instance.author = request.user
         reply_instance.parent = post_instance
         reply_instance.body = self.cleaned_data["body"]
         reply_instance.subreddit = subreddit_instance
@@ -121,8 +123,6 @@ class RegistrationForm(UserCreationForm):
             user.save()
         return user
 
-
-
 class SubredditForm(forms.Form):
     # class Meta:
     #     model = Subreddit
@@ -152,8 +152,6 @@ class SubredditForm(forms.Form):
     #     super(SubredditForm, self).__init__(*args, **kwargs)
     #     self.helper = FormHelper(self)
     #     self.helper.layout.append(Submit('submit', 'Submit', css_class='btn btn-primary'))
-
-
 
 # class UserForm(forms.Form):
 #     class Meta:

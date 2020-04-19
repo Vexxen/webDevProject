@@ -68,6 +68,7 @@ class Subreddit(models.Model):
 
 class Post(MPTTModel):
     title = models.CharField(max_length=50, unique=False, blank=True)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
     body = models.TextField()
     published_on = models.DateTimeField(auto_now_add=True, auto_now=False)
     last_modified = models.DateTimeField(auto_now_add=False, auto_now=True)

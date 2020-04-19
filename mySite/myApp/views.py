@@ -50,13 +50,13 @@ def make_suggestion(request):
     }
     return render(request, "suggestion.html", context=context)
 
+@login_required
 def make_subreddit(request):
     if request.method == "POST":
         if request.user.is_authenticated:
             form = forms.SubredditForm(request.POST)
             if form.is_valid():
                 form.save(request)
-                
                 return redirect("/list/") #return to home for now, change to the sub just created later
         else:
             form = forms.SubredditForm()
@@ -261,6 +261,7 @@ def show_posts(request, sub, post_id):
     }
     return render(request, 'subreddits/posts.html', context=context)
 
+@login_required 
 def create_post(request, sub):
     if not request.user.is_authenticated:
         return redirect("/")
@@ -268,7 +269,7 @@ def create_post(request, sub):
         if request.user.is_authenticated:
             form = forms.PostForm(request.POST)
             if form.is_valid():
-                form.save(sub)
+                form.save(request, sub)
                 return redirect("/list/" + sub + "/")
         else:
             form = forms.PostForm()
@@ -282,6 +283,7 @@ def create_post(request, sub):
     return render(request, "subreddits/newPost.html", context=context)
 
 #pass root node ID to see your response?
+@login_required
 def create_reply(request, sub, post_id):
     if not request.user.is_authenticated:
         return redirect("/")
@@ -289,7 +291,7 @@ def create_reply(request, sub, post_id):
         if request.user.is_authenticated:
             form = forms.ReplyForm(request.POST)
             if form.is_valid():
-                form.save(sub, post_id)
+                form.save(request, sub, post_id)
                 return redirect("/list/" + sub + "/posts/" + str(post_id) +"/")
         else:
             form = forms.ReplyForm()
