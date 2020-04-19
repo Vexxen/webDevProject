@@ -7,6 +7,7 @@
 
 <h1>{{ subreddit.title }}</h1>
 <br/>{{ subreddit.description }}<br/>
+<div><a href="{% url 'room' subreddit.title %}">Join Chat</a></div>
 <div><a href="{% url 'create_post' subreddit.title %}" >Create New Post</a></div>
 <ul>
     {% if posts %}
