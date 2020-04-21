@@ -5,29 +5,31 @@
 {{ title }} -->
 {% block content %}
 
-<h1>{{ subreddit.title }}</h1>
-<br/>{{ subreddit.description }}<br/>
+<h1 class="text-center">{{ subreddit.title }}</h1>
+<br/>
+<p>{{ subreddit.description }}</p>
+<br/>
 <div><a href="{% url 'room' subreddit.title %}">Join Chat</a></div>
 <div><a href="{% url 'create_post' subreddit.title %}" >Create New Post</a></div>
 <ul>
     {% if posts %}
         {% recursetree posts %}
-            <li>
+            <div class="card">
                 {% if node.title %}
                 <a href="{% url 'root_post' subreddit.title node.id %}">{{node.title}}</a>
                 <div class="upvote" id="button-{{ node.id }}" data-href="{% url 'upvote' node.id %}">
                     {% csrf_token %}
-                    <button class="btn btn-primary">upvote</button>
+                    <button class="btn btn-primary btn-xs">+</button>
                 </div>
                 <div><p id="score" name="scoreText-{{ node.id }}">{{ node.score }}</p></div>
                 <div class="downvote" id="button-{{ node.id }}" data-href="{% url 'downvote' node.id %}">
                     {% csrf_token %}
-                    <button class="btn btn-primary">downvote</button>
+                    <button class="btn btn-primary btn-xs">-</button>
                 </div>
                 <div>posted by: {{ node.author }}</div>
-            </br>
+                </br>
                 {% endif %}
-            </li>
+            </div>
         {% endrecursetree %}
     {% else %}
         There's nothing here....  
@@ -37,6 +39,7 @@
 {% endblock %}
 
 {% block scripts %}
+<link rel="stylesheet" href="{% static "css/cards.css" %}">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>

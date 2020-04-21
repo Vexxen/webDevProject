@@ -37,8 +37,6 @@ urlpatterns = [
     path('comment/<int:sugg_id>/', views.comment),
     path('newSub/', views.make_subreddit),
     path('subList/', views.get_subreddits),
-    path('newThread/', views.make_thread, name="make_thread"),
-    path('threadList/', views.get_threads, name="get_threads"),
     path('list/', views.list_subreddits, name='list_subreddits'),
     path('list/<str:sub>/', views.subreddit_main_page, name='subreddit'),
     path('list/<str:sub>/posts/<int:post_id>/', views.show_posts, name='root_post'),

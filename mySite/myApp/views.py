@@ -86,20 +86,9 @@ def get_subreddits(request):
 
 # Create your views here.
 def index(request):
-    # suggestion_objects = models.Suggestion_Model.objects.all()
-    # suggestion_list = []
-    # for sugg in suggestion_objects:
-    #     comment_objects = models.Comment_Model.objects.filter(suggestion=sugg)
-    #     temp_sugg = {}
-    #     temp_sugg["suggestion"] = sugg.suggestion
-    #     temp_sugg["author"] = sugg.author.username
-    #     temp_sugg["comments"] = comment_objects
-    #     suggestion_list += [temp_sugg]
-
     context = {
-        "title":"Template Demo",
-        "body":"<p> Hello Body</p>",
-        # "suggestion_list":suggestion_list,
+        "title":"BadReddit",
+        "body":"Welcome to BadReddit where you're better off at Reddit.",
     }
     return render(request, "index.html", context=context)
 
@@ -127,30 +116,6 @@ def list_subreddits(request):
     }
     return render(request, "subreddits/subredditList.html", context=context)
 
-def get_threads(request):
-    thread_objects = models.Thread.objects.all().order_by(
-        '-pulished_on'
-    )
-    thread_list = {}
-    thread_list["threads"] = []
-    #fetch all threads
-
-def make_thread(request):
-    if request.method == "POST":
-        if request.user.is_authenticated:
-            form = forms.SubredditForm(request.POST)
-            if form.is_valid():
-                form.save(request)
-                return redirect("/") #return to home for now, change to the sub just created later
-        else:
-            form = forms.SubredditForm()
-    else:
-        form = forms.SubredditForm()
-    context = {
-        "title":"Create New Thread",
-        "form":form
-    }
-    return render(request, "newThread.html", context=context)
 
 def get_suggestions(request):
     suggestion_objects = models.Suggestion_Model.objects.all().order_by(
@@ -339,25 +304,3 @@ def create_reply(request, sub, post_id):
         "post_id":post_id
     }
     return render(request, "subreddits/reply.html", context=context)
-
-
-# @login_required
-# @transaction.atomic
-# def update_profile(request):
-#     if request.method == 'POST':
-#         user_form = UserForm(request.POST, instance=request.user)
-#         profile_form = ProfileForm(request.POST, instance=request.user.profile)
-#         if user_form.is_valid() and profile_form.is_valid():
-#             user_form.save()
-#             profile_form.save()
-#             messages.success(request, _('Your profile was successfully updated!'))
-#             return redirect('settings:profile')
-#         else:
-#             messages.error(request, _('Please correct the error below.'))
-#     else:
-#         user_form = UserForm(instance=request.user)
-#         profile_form = ProfileForm(instance=request.user.profile)
-#     return render(request, 'profiles/profile.html', {
-#         'user_form': user_form,
-#         'profile_form': profile_form
-#     })

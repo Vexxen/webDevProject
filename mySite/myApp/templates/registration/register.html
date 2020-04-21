@@ -1,24 +1,32 @@
 {% extends "base.html" %}
-
+{% load static %}
 {% block title %}Registration{% endblock %}
 {% block content %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 
-<!-- <div class=""> -->
-    <!-- <div class=> -->
+<div class="grid-x grid-padding-x">
+    <div class="large-4 medium-4 small-12 large-offset-4 medium-offset-4 cell">
         <h4 class="text-center">Register</h4>
         <form action="/register/" method="post">
             {% csrf_token %}
             {{ form.errors }}
+        <div>
             {{ form.username.label_tag }}
             {{ form.username }}
+        </div>
+        <div>
             {{ form.email.label_tag }}
             {{ form.email }}
-            {{ form.password1.label_tag }}
+        </div>
+        <div>{{ form.password1.label_tag }}
             {{ form.password1 }}
+        </div>
+        <div>
             {{ form.password2.label_tag }}
             {{ form.password2 }}
+        </div>
         <input type="submit" class="button expanded" value="Register" />
         </form>
-    <!-- </div> -->
-<!-- </div> -->
+    </div>
+</div>
 {% endblock %}
